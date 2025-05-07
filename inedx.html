@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ckeditor5測試||免費但比較簡陋</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            padding: 25px;
+        }
+
+
+
+
+        .box {
+            width: 100%;
+            height: auto;
+            background-color: rgb(255, 255, 255);
+            border: 1px solid gray;
+            padding: 30px;
+            border-radius: 5px;
+        }
+
+        .box table {
+            width: auto;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .box td,
+        .box th {
+            border: 1px solid #999;
+            padding: 8px;
+            text-align: left;
+        }
+
+
+        
+    .btn{
+        margin: 10px 0;
+        cursor: pointer;
+        padding: 12px 24px;
+        border:none;
+        font-size: 2rem;
+        border-radius: 5px;
+        box-shadow: 1px 1px 2px black;
+    }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        <h1>Ckeditor5-隨意複製word內容試試看</h1>
+        <p><span style="color:blue">※免費的就很陽春，但至少可以保留基本的段落、表格、文字大小、縮排。</span>本身編輯沒有顏色、靠左靠右置中或上傳圖片...(也許再喬可以弄出來，要再試試看)</p>
+        <textarea name="editor" id="editor" v-model="post"></textarea>
+        <button class="btn" @click="posted">發文測試</button>
+
+
+        <p>發表的文章▼</p>
+        <div class="box" v-html="newPost"></div>
+    </div>
+
+
+
+    <!-- <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script> -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue
+
+        const App = createApp({
+            setup() {
+
+                const word1 = ref('免費的就很陽春，但至少可以保留基本的段落、表格、文字大小、縮排。本身編輯沒有顏色、靠左靠右置中或上傳圖片...(也許在喬可以弄出來，要再試試看)')
+                const post = ref('')
+                const newPost = ref('')
+                let editorInstance = null
+
+                const posted = () => {
+                    if (editorInstance) {
+                        post.value = editorInstance.getData()
+                        newPost.value = post.value
+                        console.log(newPost.value)
+                    }
+                }
+
+                onMounted(() => {
+                    ClassicEditor
+                        .create(document.querySelector('#editor'), {
+                            toolbar: [
+                                'heading', '|',
+                                'bold', 'italic', 'underline', '|',
+                                'alignment', '|',
+                                'numberedList', 'bulletedList', '|',
+                                'insertTable', '|',
+                                'undo', 'redo'
+                            ],
+                            fontColor: {
+                                colors: [
+                                    {
+                                        color: 'hsl(0, 0%, 0%)',
+                                        label: 'Black'
+                                    },
+                                    {
+                                        color: 'hsl(0, 0%, 30%)',
+                                        label: 'Dim grey'
+                                    },
+                                    {
+                                        color: 'hsl(0, 0%, 60%)',
+                                        label: 'Grey'
+                                    },
+                                    {
+                                        color: 'hsl(0, 0%, 90%)',
+                                        label: 'Light grey'
+                                    },
+                                    {
+                                        color: 'hsl(0, 0%, 100%)',
+                                        label: 'White',
+                                        hasBorder: true
+                                    },
+                                    // More colors.
+                                    // ...
+                                ]
+                            },
+                            alignment: {
+                                options: ['left', 'center', 'right', 'justify']
+                            }
+                        })
+                        .then(editor => {
+                            editorInstance = editor;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                })
+
+                return {
+                    word1,
+                    post,
+                    posted,
+                    newPost
+                }
+            }
+        })
+
+        App.mount('#app')
+    </script>
+
+
+</body>
+
+</html>
